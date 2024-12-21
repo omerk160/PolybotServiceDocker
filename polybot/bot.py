@@ -118,16 +118,17 @@ class ObjectDetectionBot:
                 yolo_results = self.get_yolo5_results(img_name)
                 logger.info(f'YOLOv5 results: {yolo_results}')
 
-                if yolo_results and 'labels' in yolo_results:
-                    # Step 5: Send the prediction results back to the user
-                    logger.info('Step 5: Sending prediction results to user')
-                    detected_objects = [label['class'] for label in yolo_results['labels']]
+                # Step 5: Handle YOLOv5 predictions
+                if yolo_results and isinstance(yolo_results.get('predictions'), list):
+                    # Extract object classes from the predictions
+                    detected_objects = [item['class'] for item in yolo_results['predictions']]
                     if detected_objects:
                         results_text = f"Detected objects: {', '.join(detected_objects)}"
                     else:
                         results_text = "No objects detected."
                     self.send_text(chat_id, results_text)
                 else:
+                    # Log and notify about invalid response
                     logger.error('YOLOv5 service returned no results or incorrect response format')
                     self.send_text(chat_id, "There was an error processing the image.")
 
@@ -136,4 +137,5 @@ class ObjectDetectionBot:
                 self.send_text(chat_id, "There was an error processing the image.")
         else:
             logger.info('Message does not contain a photo')
-            self.send_text(chat_id, "Please send a photo with a valid caption.")
+            self.send_text(chat_id, "Please send a photo for object detection.")
+

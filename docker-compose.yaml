@@ -70,12 +70,12 @@ services:
         '"
 
   yolov5:
-    image: omerk160/yolo5:2.0.0
+    image: omerk160/yolo5:2.0.1
     container_name: yolov5-app
     ports:
       - "8081:8081"
     environment:
-      - BUCKET_NAME=guy-polybot-docker-bucket
+      - BUCKET_NAME=omerpolybucket
       - MONGO_URI=mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=myReplicaSet
       - MONGO_DB=default_db
       - MONGO_COLLECTION=predictions
@@ -83,7 +83,7 @@ services:
       - mongoCluster
 
   polybot-service:
-    image: omerk160/polybot:1.0.1
+    image: omerk160/polybot:1.0.3
     container_name: polybot-service
     platform: linux/amd64  # Specify the platform
     ports:

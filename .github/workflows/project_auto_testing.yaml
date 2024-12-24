@@ -18,7 +18,7 @@ jobs:
       - name: Parse EC2 pablic IP address
         run: |
           EC2_PUBLIC_IP=$(grep -E "EC2_PUBLIC_IP" .github/workflows/service-deploy.yaml | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' || true)
-          echo -e "\n\nParsed EC2 public IP address: $EC2_PUBLIC_IP"   #       
+          echo -e "\n\nParsed EC2 public IP address: $EC2_PUBLIC_IP"          
 
           if [[ -z "$EC2_PUBLIC_IP" ]]; then
             echo -e "\n\nInvalid EC2_PUBLIC_IP env var found in .github/workflows/service-deploy.yaml"

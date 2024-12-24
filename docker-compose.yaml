@@ -67,9 +67,10 @@ services:
               {_id: 2, host: \"mongo3:27017\"}
             ]
           })
-        ';
-        tail -f /dev/null
+        '
       "
+    restart: always
+
   
 
   yolov5:

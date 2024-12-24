@@ -76,6 +76,7 @@ jobs:
             POLYBOT_IMG_NAME=${{ secrets.DOCKERHUB_USERNAME }}/polybot:${{ github.run_number }}
             YOLO5_IMG_NAME=${{ secrets.DOCKERHUB_USERNAME }}/yolo5:${{ github.run_number }}
             TELEGRAM_APP_URL=$NGROK_DOMAIN
+            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
             EOF
             docker-compose down
             docker-compose up -d

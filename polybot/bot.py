@@ -1,3 +1,14 @@
+"""
+
+This file contains the core logic for the Telegram bot.
+including downloading photos from Telegram
+uploading them to S3
+interacting with the YOLOv5 service for object detection
+sending back the results to the user in Telegram.
+
+"""
+
+
 import telebot
 from loguru import logger
 import os

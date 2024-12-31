@@ -1,3 +1,11 @@
+"""
+
+This file contains the Flask application for the Polybot service that handles incoming Telegram messages
+It passes images to the YOLOv5 service, and sends results back to Telegram users.
+
+"""
+
+
 import flask
 from flask import request
 import os
@@ -11,7 +19,7 @@ app = flask.Flask(__name__)
 
 
 TELEGRAM_APP_URL = os.environ['TELEGRAM_APP_URL']
-S3_BUCKET_NAME = os.environ['BUCKET_NAME']  # Make sure the S3 bucket is set as an environment variable
+S3_BUCKET_NAME = os.environ['BUCKET_NAME']
 TELEGRAM_TOKEN= os.environ['TELEGRAM_TOKEN']
 # Initialize the S3 client
 s3_client = boto3.client('s3')

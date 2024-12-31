@@ -1,6 +1,18 @@
+"""
+
+This app contains the Flask application that serves as a microservice for object detection using YOLOv5.
+The workflow:
+It receives image names
+downloads images from S3
+runs the YOLOv5 model
+saves results to S3 and MongoDB
+returns prediction data as JSON.
+
+"""
+#Import Modules and libraries
 import time
 from pathlib import Path
-from flask import Flask, request, jsonify  # Import jsonify for proper JSON responses
+from flask import Flask, request, jsonify
 from detect import run
 import uuid
 import yaml
@@ -9,12 +21,14 @@ import os
 import boto3
 from pymongo import MongoClient
 
+
 yolo_endpoint = "http://yolov5:8081/predict"
 images_bucket = os.environ['BUCKET_NAME']
 mongo_uri = os.environ['MONGO_URI']  # MongoDB connection URI
 db_name = os.environ.get('MONGO_DB', 'default_db')  # Default to 'default_db' if no environment variable is set
 collection_name = os.environ.get('MONGO_COLLECTION', 'predictions')  # Default collection name
-#
+
+
 s3_client = boto3.client('s3')
 mongo_client = MongoClient(mongo_uri)
 db = mongo_client[db_name]
@@ -29,7 +43,7 @@ app = Flask(__name__)
 @app.route('/predict', methods=['POST'])
 def predict():
     prediction_id = str(uuid.uuid4())
-    logger.info(f'prediction: {prediction_id}. start processing')
+    logger.info(f'prediction: {prediction_id}. start processing') #Start prediction
 
     img_name = request.json.get('imgName')  # Changed to get from JSON body instead of query args
     logger.info(f'Received imgName: {img_name}')  # Log received imgName
@@ -56,18 +70,19 @@ def predict():
         save_txt=True
     )
 
-    pred_dir = f'static/data/{prediction_id}2'
-    pred_summary_path = Path(f'{pred_dir}/labels/{img_name.split(".")[0]}.txt')
+    pred_dir = f'static/data/{prediction_id}2' # Construct the path to the prediction dir, since we can't control that from the run script
+    pred_summary_path = Path(f'{pred_dir}/labels/{img_name.split(".")[0]}.txt') # Construct the predicted labels text file path.
     # Check if directory exists
     if os.path.exists(os.path.dirname(pred_summary_path)):
         logger.info(f'Files in directory: {os.listdir(os.path.dirname(pred_summary_path))}')
     else:
         logger.error(f'Directory does not exist: {os.path.dirname(pred_summary_path)}')
+
     logger.info(f'YOLOv5 finished. Checking directory: {os.path.dirname(pred_summary_path)}')
     logger.info(f'Files in directory: {os.listdir(os.path.dirname(pred_summary_path))}')
 
     label_dir = f"static/data/{prediction_id}2/labels"
-    os.makedirs(label_dir, exist_ok=True)
+    os.makedirs(label_dir, exist_ok=True) #Ensure output dir exist
 
     predicted_img_path = Path(f'{pred_dir}/{img_name}')
     predicted_s3_key = f'predictions/{prediction_id}/{img_name}'
